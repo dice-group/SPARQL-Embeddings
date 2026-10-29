@@ -51,10 +51,10 @@ Pipeline position (see datasets/DATASET.md):
 
 How to run (from datasets/dbpedia-splits/):
   Full pipeline, from the Stage 2 output:
-    python ../scripts/rebuild_dbpedia_clean_splits.py --input sources/dbpedia-triplets-dataset.json --output-dir .
+    python ../scripts/dataset_construction/dbpedia/rebuild_dbpedia_clean_splits.py --input sources/dbpedia-triplets-dataset.json --output-dir .
   Reproduce the released dataset from the frozen query list and the cached answers
   (no endpoint access needed when the cache is present):
-    python ../scripts/rebuild_dbpedia_clean_splits.py --input unique_queries.json --output-dir <new_dir>
+    python ../scripts/dataset_construction/dbpedia/rebuild_dbpedia_clean_splits.py --input unique_queries.json --output-dir <new_dir>
     (copy query_execution_cache.jsonl into <new_dir> first)
   The released split files are the *-clean.json outputs renamed to dbpedia-{train,valid,test}.json.
 """

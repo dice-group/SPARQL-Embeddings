@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run where <graph>-clean-splits/query_execution_cache.jsonl exists (output of the rebuild script).
+"""Run where datasets/<graph>-splits/query_execution_cache.jsonl exists (output of the rebuild script).
 Gives: execution time, pair-labeling time, truncation check (answer sizes that recur like a cap),
 and queries whose answers contain blank nodes.  Usage: python table1_from_cache.py <cache.jsonl>"""
 import json, sys, time

@@ -51,10 +51,10 @@ Pipeline position (see datasets/DATASET.md):
 
 How to run (from datasets/wikidata-splits/):
   Full pipeline, from the Stage 2 output:
-    python ../scripts/rebuild_wikidata_clean_splits.py --input sources/wikidata-triplets-dataset.json --output-dir .
+    python ../scripts/dataset_construction/wikidata/rebuild_wikidata_clean_splits.py --input sources/wikidata-triplets-dataset.json --output-dir .
   Reproduce the released dataset from the frozen query list and the cached answers
   (no endpoint access needed when the cache is present):
-    python ../scripts/rebuild_wikidata_clean_splits.py --input unique_queries.json --output-dir <new_dir>
+    python ../scripts/dataset_construction/wikidata/rebuild_wikidata_clean_splits.py --input unique_queries.json --output-dir <new_dir>
     (copy query_execution_cache.jsonl into <new_dir> first)
   The released split files are the *-clean.json outputs renamed to wikidata-{train,valid,test}.json.
 """

@@ -4,7 +4,7 @@ Labeling cost for the paper (Section 3.2): time to compute the answer-overlap (J
 for all pairs of usable queries, from the cached answer sets.
 
 Uses the labeling functions of the dataset build script itself
-(datasets/scripts/rebuild_<graph>_clean_splits.py): an inverted index over answer rows counts the
+(datasets/scripts/dataset_construction/<graph>/rebuild_<graph>_clean_splits.py): an inverted index over answer rows counts the
 shared rows of every pair that shares at least one row (all other pairs have J = 0), and J is then
 computed for these pairs and the positive components are formed. No query is executed.
 
@@ -28,7 +28,7 @@ def main():
     args = ap.parse_args()
     g = args.dataset
 
-    spec = importlib.util.spec_from_file_location("rebuild", f"datasets/scripts/rebuild_{g}_clean_splits.py")
+    spec = importlib.util.spec_from_file_location("rebuild", f"datasets/scripts/dataset_construction/{g}/rebuild_{g}_clean_splits.py")
     rb = importlib.util.module_from_spec(spec)
     sys.modules["rebuild"] = rb  # needed for the dataclasses in the module
     spec.loader.exec_module(rb)
