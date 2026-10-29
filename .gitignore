@@ -16,3 +16,9 @@ logs/
 
 # large execution caches (released separately, not via git)
 datasets/*/query_execution_cache.jsonl
+
+# syntax-control working files (results are in experiment_results/syntax_control/)
+results_syntax_control/
+scripts/syntax_control/cache/
+scripts/syntax_control/control_results.json
+scripts/syntax_control/control_latex.txt
