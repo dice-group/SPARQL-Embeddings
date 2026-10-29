@@ -18,8 +18,8 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
 export PYTHONHASHSEED=0
-MODELS="${MODELS:-e5-base-v2 codebert}"
-SEEDS="${SEEDS:-42 43}"
+MODELS="${MODELS:-e5-base-v2 qwen3-embedding codebert}"
+SEEDS="${SEEDS:-42 43 44}"
 GRAPHS="${GRAPHS:-dbpedia wikidata}"
 STEP="${STEP:-all}"
 BASE_CFG="configs/experiment_syntax_control.yaml"

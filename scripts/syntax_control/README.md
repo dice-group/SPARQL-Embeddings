@@ -17,19 +17,16 @@ and RDF terms). The low-similarity zone is every training query with similarity 
 anchor's weakest syntax positive (`--neg-ratio`). Queries rdflib cannot parse (0 on DBpedia,
 7 on Wikidata) fall back to the TF-IDF token bag.
 
-## Fast plan (1-2 days)
+## Setup
 
-- **Encoders:** E5-base-v2 and CodeBERT (both ~110M parameters). Qwen3-Embedding is left out
-  because it is the slowest.
-- **Seeds:** 42 and 43.
-- **Order:** DBpedia first (3.7k training anchors), Wikidata in parallel on a second GPU or
-  right after (6.7k anchors, about 2x slower per epoch).
-- **Validation every 2 epochs** instead of every epoch (`eval_every_epochs: 2`).
-- **Epochs:** 20 by default. Use 10 only if the main runs found their best checkpoint by
-  epoch 10 (step 0), so the comparison stays fair.
+- **Encoders:** E5-base-v2, Qwen3-Embedding and CodeBERT (a text embedder, an LLM-based
+  embedder and a code model).
+- **Seeds:** 42, 43 and 44.
+- **Training and checkpoint selection** exactly as in the main runs (`configs/experiment.yaml`):
+  20 epochs, validation after every epoch, checkpoint with the highest validation nDCG@10.
 
-That is 4 runs per graph, 8 in total. The answer-label side reuses the existing checkpoints
-of the main runs (same encoders, same seeds), so nothing is retrained.
+That is 9 runs per graph, 18 in total. The answer-label side reuses the checkpoints of the
+main runs (same encoders, same seeds), so nothing is retrained.
 
 ## Run
 
@@ -38,12 +35,8 @@ From the repository root, on the GPU machine that holds the main-run checkpoints
 ```bash
 pip install -r scripts/baselines/requirements.txt   # rdflib, numpy, networkx
 
-# 0. Check the best epochs of the main runs (decides EPOCHS)
-STEP=check bash scripts/syntax_control/run_syntax_control.sh
-
 # 1+2+3. DBpedia on GPU 0 (labels -> training -> evaluation)
 CUDA_VISIBLE_DEVICES=0 GRAPHS=dbpedia bash scripts/syntax_control/run_syntax_control.sh
-#        add EPOCHS=10 in front if step 0 allows it
 
 # Wikidata on GPU 1, in parallel
 CUDA_VISIBLE_DEVICES=1 GRAPHS=wikidata bash scripts/syntax_control/run_syntax_control.sh
@@ -52,7 +45,7 @@ CUDA_VISIBLE_DEVICES=1 GRAPHS=wikidata bash scripts/syntax_control/run_syntax_co
 STEP=eval bash scripts/syntax_control/run_syntax_control.sh
 ```
 
-Defaults: `MODELS="e5-base-v2 codebert"`, `SEEDS="42 43"`, `GRAPHS="dbpedia wikidata"`.
+Defaults: `MODELS="e5-base-v2 qwen3-embedding codebert"`, `SEEDS="42 43 44"`, `GRAPHS="dbpedia wikidata"`.
 Any of them, plus `EPOCHS` and `EVAL_EVERY`, can be set in front of the command.
 Steps: `STEP=check | labels | train | eval | all`. Training is resumable: rerun the same
 command after an interruption.
@@ -71,23 +64,15 @@ What each step does:
    - `control_results.json`: all numbers, per encoder and averaged
    - `control_latex.txt`: table rows and the numbers for the paper paragraph
 
-## Speed settings (do not change results)
+## Differences from the main runs
 
-- `gradient_checkpointing: false`: checkpointing saves memory by recomputing activations,
-  which costs about 20-30% extra time. At 4 anchors per batch memory is not a problem.
-- `encode_batch_size: 256` for validation and mining encodes.
-- `src/result_aware/evaluation.py` ranks all validation queries with one matrix product per
-  anchor instead of one dot product per candidate. Same scores and order (up to float
-  rounding), much faster validation. This also speeds up the main runs.
-
-Not changed on purpose: `batch_size: 4`, `explicit_negatives: 4` (they define the in-batch
-negatives of the loss), learning rate, schedule and `max_length`. Changing them would make the
-control no longer matched to the main runs.
-
-## Differences from the main runs (report in the paper)
-
-- 2 encoders and 2 seeds instead of 10 and 5.
-- Validation every 2 epochs instead of every epoch (and 10 epochs if `EPOCHS=10` was used).
+`configs/experiment_syntax_control.yaml` differs from `configs/experiment.yaml` only in the
+training files (`*-train-syntax.json`), the output folder (`results_syntax_control/`), the
+seeds (42-44) and the disabled result-caching evaluation. Batch size, explicit negatives,
+learning rate, schedule, `max_length`, hard-negative mining, validation frequency and
+checkpoint selection are identical, so the control is matched to the main runs. It covers
+3 encoders and 3 seeds instead of 10 and 5; the answer-label side of the comparison uses the
+same 3 encoders and seeds.
 
 ## Label statistics (already computed)
 
@@ -100,12 +85,7 @@ control no longer matched to the main runs.
 | Share of an anchor's syntax positives that are answer positives (mean) | 13% | 21% |
 | Syntax negatives that are answer positives | 0.01% | 0.03% |
 
-## After it finishes
+## Results
 
-Send `control_latex.txt` (or paste its numbers) into the paper:
-- `Tables/compact/retrieval.tex` and `Tables/compact/fullcollection.tex`: the two control rows
-- `main.tex`: the "Results-aware versus syntax-based supervision" paragraph, one sentence in
-  Finding 2 and one in the Conclusion.
-
-If answer labels win with intervals excluding zero, state it as the method result. If the
-intervals include zero, report it honestly: syntax supervision explains most of the gain.
+`experiment_results/syntax_control/control_results.json` and `control_latex.txt` hold the
+numbers reported in the paper (Table 3 and Section 4.3).
