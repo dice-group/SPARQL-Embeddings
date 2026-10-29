@@ -41,14 +41,6 @@ Answers,test_rq3.query_count,473,968
 Execution time,execution_time_median_s,0.03,0.15
 Execution time,execution_time_p95_s,0.09,18.88
 Execution time,execution_time_total_hours,0.3,10.86
-Templates,largest_template_share_pct[all],34.7,8.9
-Templates,largest_template_share_pct[so],34.7,3.8
-Templates,templates[all],115,"3,056"
-Templates,templates[so],143,"5,363"
-Templates,test_anchors_with_training_template_pct[all],97.9,78
-Templates,test_anchors_with_training_template_pct[so],97.9,46.6
-Templates,test_queries_with_training_template_pct[all],97.5,72.4
-Templates,test_queries_with_training_template_pct[so],97.5,44.2
 Query form,negatives_different_arity_pct,25,33.9
 Query form,positives_same_arity_pct,100,100
 Query length,max_length_by_model [bge-base],512,512
