@@ -22,3 +22,7 @@ results_syntax_control/
 scripts/syntax_control/cache/
 scripts/syntax_control/control_results.json
 scripts/syntax_control/control_latex.txt
+
+# intermediate files of dataset Stages 1-2 (large, not shipped; see DATASET.md)
+datasets/*/sources/
+/successful_*.json

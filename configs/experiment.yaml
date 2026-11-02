@@ -1,7 +1,7 @@
 project_name: result-aware-transformers
 output_dir: results
 
-# Point these at the fresh leakage-free splits.
+# Train/valid/test splits used in the paper.
 datasets:
   dbpedia:
     train: datasets/dbpedia-splits/dbpedia-train.json
@@ -20,7 +20,7 @@ training:
   weight_decay: 0.01
   warmup_ratio: 0.05
   max_grad_norm: 1.0
-  temperature: 0.05        # scale = 1 / temperature = 20, matching V30
+  temperature: 0.05        # scale = 1 / temperature = 20
   explicit_negatives: 4
   hard_fraction: 0.75
   hard_top_k: 8
