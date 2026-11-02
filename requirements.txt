@@ -1,9 +1,10 @@
-# Exact versions used for the paper (main environment): all Wikidata runs and the
-# DBpedia E5-base-v2 / Gemma-3 runs. For the other DBpedia checkpoints use requirements-tf5.txt.
+# Exact versions used for the paper (Python 3.10, CUDA 12.8).
+# Every fine-tuned checkpoint reproduces its stored test results exactly
+# under these versions (see README, "Environment").
 torch==2.9.1
-transformers==4.57.3
-tokenizers==0.22.1
-safetensors==0.7.0
+transformers==5.16.1
+tokenizers==0.23.3
+safetensors==0.8.0
 numpy==2.2.6
 scipy==1.15.2
 pandas==2.3.3
@@ -12,3 +13,12 @@ tqdm==4.67.1
 rdflib==7.5.0
 networkx==3.4.2
 pytest>=8.0
+
+# Only needed to rebuild the dataset from the SPARQL endpoints
+# (datasets/scripts/dataset_construction/) and to run the notebooks.
+requests
+SPARQLWrapper
+ijson
+matplotlib
+scikit-learn
+nbconvert

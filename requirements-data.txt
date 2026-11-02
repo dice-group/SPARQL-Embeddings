@@ -1,7 +1,0 @@
-# Only for rebuilding the dataset from the endpoints, the notebooks and the demo build.
-requests
-SPARQLWrapper
-ijson
-matplotlib
-scikit-learn
-nbconvert
