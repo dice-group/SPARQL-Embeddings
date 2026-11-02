@@ -1,7 +1,7 @@
 # Exact versions used for the paper (Python 3.10, CUDA 12.8).
 # Every fine-tuned checkpoint reproduces its stored test results exactly
 # under these versions (see README, "Environment").
-torch==2.9.1
+torch==2.13.0
 transformers==5.16.1
 tokenizers==0.23.3
 safetensors==0.8.0
