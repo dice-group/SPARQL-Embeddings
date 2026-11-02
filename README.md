@@ -40,6 +40,8 @@ A fixed similarity threshold is still not enough for safe reuse (see the paper, 
 
 Splits are built from connected components of positive pairs, so no query, positive pair or answer set is shared across splits. Files: `datasets/{dbpedia,wikidata}-splits/` (`*-train/valid/test.json` for training and retrieval, `*-test-rq3.json` with complete pair labels for caching).
 
+How the dataset is built, and how to reproduce the splits: [`datasets/DATASET.md`](datasets/DATASET.md).
+
 ```json
 {"anchor_query": "SELECT ...",
  "positive_queries": [{"query": "SELECT ...", "answer_jaccard": 1.0}],
@@ -49,7 +51,7 @@ Splits are built from connected components of positive pairs, so no query, posit
 ## Quick start
 
 ```bash
-pip install -e .
+pip install -r requirements.txt && pip install -e .
 python scripts/validate_data.py --dataset dbpedia          # sanity checks on the splits
 
 # one model
@@ -61,6 +63,43 @@ python scripts/aggregate_results.py && python scripts/generate_tables.py
 ```
 
 Each run evaluates zero-shot, fine-tunes, selects the checkpoint on validation nDCG@10, and evaluates retrieval, alignment and caching on test. Runs resume; use `--force` to recompute. Gated models (Gemma) need `huggingface-cli login`.
+
+## Environment
+
+Python 3.10, CUDA 12.8.
+
+```bash
+pip install -r requirements.txt
+pip install -e .
+```
+
+`requirements.txt` pins the exact versions used for the paper. The packages in its last block are only needed to rebuild the dataset from the SPARQL endpoints and to run the notebooks.
+
+The checkpoints were trained under transformers 5.16.1 (DBpedia: BGE, CodeBERT, GraphCodeBERT, GTE, MPNet, Qwen2.5-Coder, Qwen3-Embedding, SPBERT) or 4.57.3 (DBpedia E5 and Gemma, and all Wikidata runs). Under the pinned 5.16.1, every fine-tuned checkpoint reproduces its stored test results exactly. Three Wikidata zero-shot baselines (Gemma, CodeBERT, Qwen2.5-Coder) were scored under 4.57.3 and differ by one test anchor (±0.0012 Hits@1) under 5.16.1. To reproduce them exactly, run `pip install transformers==4.57.3 tokenizers==0.22.1 safetensors==0.7.0`.
+
+## Reproducing the paper
+
+All commands run from the repository root with `export PYTHONPATH="$PWD/src:$PYTHONPATH"`.
+Scripts write to `results/`; the files behind the paper are in
+[`experiment_results/`](experiment_results/) (same layout, see its README). To run the
+analysis steps on them without retraining: `ln -s experiment_results results`.
+
+| Paper | Command | Output |
+|---|---|---|
+| Training, Table 2 (stored labels), Table 4 (caching), RQ1 | `python scripts/run_experiment.py --models all --datasets dbpedia wikidata --seeds 42 43 44 45 46`, then `python scripts/aggregate_results.py` and `python scripts/generate_tables.py` | `results/raw/`, `results/aggregated/`, `results/tables/` |
+| Non-neural baselines (Tables 2, 3) | `bash scripts/baselines/run_baselines.sh` | `scripts/baselines/results_<graph>.json` |
+| Per-anchor scores (input of Table 3 and the CIs) | `python scripts/analysis/per_anchor_scores.py --dataset <graph>` | `results/per_anchor/` |
+| Table 3 (complete labels), paired CIs, seen/unseen templates (Sec. 4.3) | `python scripts/analysis/paired_analysis.py --dataset <graph>` | `results/analysis/paired_analysis_<graph>.json` |
+| Syntax-supervised control (Table 3, Sec. 4.3) | `MODELS="e5-base-v2 qwen3-embedding codebert" SEEDS="42 43 44" bash scripts/syntax_control/run_syntax_control.sh` | `results_syntax_control/`, `control_results.json` |
+| Caching intervals (Sec. 4.4) | `python scripts/analysis/cache_ci.py` | `results/analysis/cache_ci.json` |
+| Threshold selection (Sec. 4.4, Appendix B, Fig. 4) | `python scripts/analysis/calibrate_thresholds.py --dataset <graph>` | `results/analysis/calibration_<graph>.json` |
+| Checkpoint selection (Sec. 4.1) | `python scripts/analysis/checkpoint_selection.py` | `results/analysis/checkpoint_selection.json` |
+| Inference time (Sec. 4.1) | `python scripts/analysis/timing_inference.py --dataset wikidata` | `results/analysis/timing_inference_wikidata.json` |
+| Dataset statistics (Table 1, Sec. 4.1) | `datasets/dataset_statistics.ipynb`; templates and seen/unseen anchors: `cd scripts/audit && python audit_splits.py ../../datasets/<graph>-splits <graph> audit_<graph>.json` | `datasets/statistics/`, `scripts/audit/audit_<graph>.json` |
+| Label thresholds (Appendix A, Fig. 3) | `LT_MODE=full jupyter nbconvert --to notebook --execute scripts/analysis/label_thresholds.ipynb` (needs the execution cache) | `results/analysis/label_thresholds/`; generated files in `experiment_results/analysis/label_thresholds/` |
+| Labeling time (Sec. 4.1) | `python scripts/analysis/timing_labeling.py --dataset <graph>` (needs the execution cache) | `results/analysis/timing_labeling_<graph>.json` |
+
+Training was run on one NVIDIA A100 80 GB per run.
 
 ## Repository layout
 
