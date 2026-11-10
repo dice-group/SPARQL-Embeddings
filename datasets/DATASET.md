@@ -22,6 +22,71 @@ Stage 3  rebuild_<g>_clean_splits.py      full execution, Jaccard labels, splits
 `<g>-splits/sources/` is the working folder of Stages 1 and 2. It is not part of the
 repository (it is git-ignored); see "Released intermediate files" below.
 
+## Download (Zenodo)
+
+The released dataset, including the answer caches, is archived on Zenodo:
+https://doi.org/10.5281/zenodo.23923443 (data license: CC BY-SA 4.0).
+
+All files are flat in the record. The split and label files keep their names; three files
+carry a graph prefix there, and the answer caches are gzipped:
+
+| File on Zenodo | Path in this repository |
+|---|---|
+| `<g>-{train,valid,test}.json`, `<g>-{valid,test}-rq3.json`, `<g>-train-syntax.json` | `datasets/<g>-splits/` (same name) |
+| `successful_queries_<g>.queries-only.json.gz` | `datasets/<g>-splits/` (same name) |
+| `<g>-unique_queries.json` | `datasets/<g>-splits/unique_queries.json` |
+| `<g>-split_report.json` | `datasets/<g>-splits/split_report.json` |
+| `<g>-query_execution_cache.jsonl.gz` | `datasets/<g>-splits/query_execution_cache.jsonl` (unpacked) |
+
+After downloading the record into the repository root:
+
+```bash
+g=wikidata                                   # or dbpedia
+mkdir -p datasets/$g-splits
+mv $g-*.json successful_queries_$g.queries-only.json.gz datasets/$g-splits/
+mv datasets/$g-splits/$g-unique_queries.json datasets/$g-splits/unique_queries.json
+mv datasets/$g-splits/$g-split_report.json   datasets/$g-splits/split_report.json
+gunzip -c $g-query_execution_cache.jsonl.gz > datasets/$g-splits/query_execution_cache.jsonl
+```
+
+Which files you need: training uses `<g>-train.json` and `<g>-valid.json`; evaluation with
+complete labels uses `<g>-test-rq3.json`; the answer caches (unpacked 1.7 GB and 22 GB) are
+only needed to recompute labels, apply other thresholds or rebuild the splits.
+
+## File formats
+
+**Splits** (`<g>-{train,valid,test}.json`, `<g>-train-syntax.json`): JSON list of anchor records.
+
+```json
+{"anchor_query": "SELECT ...",
+ "positive_queries": [{"query": "SELECT ...", "answer_jaccard": 1.0}],
+ "negative_queries": [{"query": "SELECT ...", "answer_jaccard": 0.0}]}
+```
+
+**Complete labels** (`<g>-{valid,test}-rq3.json`): JSON object with
+
+- `metadata`: counts and label definitions;
+- `queries`: list of `{"id", "query_hash", "query", "n_answers"}`, where `id` is the position in the list;
+- `positive_pairs`, `negative_pairs`: lists of `[id_i, id_j, J]` covering all unordered pairs.
+  A pair in neither list has intermediate overlap (`0.1 < J < 0.8`).
+
+**Answer cache** (`query_execution_cache.jsonl` (on Zenodo: `<g>-query_execution_cache.jsonl.gz`)): one JSON object per line.
+
+```json
+{"query": "SELECT ...", "query_hash": "7c5d0f73...", "status": "success",
+ "answers": ["[[\"uri\",\"http://www.wikidata.org/entity/Q55606385\",\"\",\"\"]]"],
+ "n_answers": 1, "error": null, "elapsed_s": 0.12}
+```
+
+- `query_hash`: SHA-256 of the query text with whitespace collapsed.
+- `answers`: the distinct result rows. Each row is a JSON string holding one
+  `[type, value, language, datatype]` tuple per projected variable, in projection order;
+  an unbound variable is `["","","",""]`. Variable names and row order are not stored.
+- `status`: `success` or `error`. Failed queries are not part of the splits.
+
+**Query lists** (`unique_queries.json`): JSON list of SPARQL strings.
+(`successful_queries_<g>.queries-only.json.gz`): gzipped JSON list of `{"sparql_query": ...}`.
+
 ## Stage 1: query collection
 
 Pages through the LSQ SPARQL endpoint with `LIMIT 1000 OFFSET i*1000` (endpoint order,
@@ -95,8 +160,8 @@ python ../scripts/dataset_construction/<g>/rebuild_<g>_clean_splits.py \
 
 This re-executes all queries, so results depend on the endpoint's graph version
 (DBpedia 2022-12 snapshot, Wikidata truthy dump of 2025-01-22). The execution caches
-(`query_execution_cache.jsonl`) are not included in this repository because of their
-size. With a cache, copy it into the output directory first
+(`query_execution_cache.jsonl`) are too large for this repository and are archived on
+Zenodo (see "Download" above). With a cache, copy it into the output directory first
 (`cp query_execution_cache.jsonl ../repro_<g>/`); Stage 3 then needs no endpoint
 access and reproduces the released splits exactly.
 
