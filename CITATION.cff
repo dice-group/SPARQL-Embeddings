@@ -1,0 +1,38 @@
+cff-version: 1.2.0
+message: "If you use this code or the SQuARE dataset, please cite them as below."
+title: "SPARQL-Embeddings: code for results-aware SPARQL embeddings and the SQuARE dataset"
+type: software
+version: 1.0.0
+license: MIT
+repository-code: "https://github.com/dice-group/SPARQL-Embeddings"
+authors:
+  - family-names: Kurugodu
+    given-names: Ganesh
+    affiliation: Paderborn University
+  - family-names: Zahera
+    given-names: Hamada M.
+    affiliation: Paderborn University
+  - family-names: Ngonga Ngomo
+    given-names: Axel-Cyrille
+    affiliation: Paderborn University
+keywords:
+  - SPARQL
+  - query embeddings
+  - contrastive learning
+  - semantic caching
+  - knowledge graphs
+references:
+  - type: dataset
+    title: "SQuARE: SPARQL Query Answer Ranking Evaluation"
+    version: 1.0.0
+    doi: 10.5281/zenodo.23923443
+    license: CC-BY-SA-4.0
+    authors:
+      - family-names: Kurugodu
+        given-names: Ganesh
+      - family-names: Zahera
+        given-names: Hamada M.
+      - family-names: Ngonga Ngomo
+        given-names: Axel-Cyrille
+    publisher:
+      name: Zenodo
