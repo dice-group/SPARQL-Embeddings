@@ -92,12 +92,12 @@ analysis steps on them without retraining: `ln -s experiment_results results`.
 | Table 2 (complete labels), paired CIs, seen/unseen templates (Sec. 5.2) | `python scripts/analysis/paired_analysis.py --dataset <graph>` | `results/analysis/paired_analysis_<graph>.json` |
 | Syntax-supervised control (Sec. 5.2) | `MODELS="e5-base-v2 qwen3-embedding codebert" SEEDS="42 43 44" bash scripts/syntax_control/run_syntax_control.sh` | `results_syntax_control/`, `control_results.json` |
 | Caching intervals (Sec. 5.3) | `python scripts/analysis/cache_ci.py` | `results/analysis/cache_ci.json` |
-| Threshold selection and risk-coverage curves (Sec. 5.3, supplementary material) | `python scripts/analysis/calibrate_thresholds.py --dataset <graph>` | `results/analysis/calibration_<graph>.json` |
+| Threshold selection and risk-coverage curves (Sec. 5.3) | `python scripts/analysis/calibrate_thresholds.py --dataset <graph>` | `results/analysis/calibration_<graph>.json` |
 | Checkpoint selection (Sec. 5.1) | `python scripts/analysis/checkpoint_selection.py` | `results/analysis/checkpoint_selection.json` |
 | Inference time (Sec. 5.1) | `python scripts/analysis/timing_inference.py --dataset wikidata` | `results/analysis/timing_inference_wikidata.json` |
 | Dataset statistics (Table 1, Sec. 4) | `datasets/dataset_statistics.ipynb`; templates and seen/unseen anchors: `cd scripts/audit && python audit_splits.py ../../datasets/<graph>-splits <graph> audit_<graph>.json` | `datasets/statistics/`, `scripts/audit/audit_<graph>.json` |
-| Label thresholds (supplementary material) | `LT_MODE=full jupyter nbconvert --to notebook --execute scripts/analysis/label_thresholds.ipynb` (needs the execution cache) | `results/analysis/label_thresholds/`; generated files in `experiment_results/analysis/label_thresholds/` |
-| Labeling time (supplementary material) | `python scripts/analysis/timing_labeling.py --dataset <graph>` (needs the execution cache) | `results/analysis/timing_labeling_<graph>.json` |
+| Label threshold analysis (Sec. 3.1, released with the resource) | `LT_MODE=full jupyter nbconvert --to notebook --execute scripts/analysis/label_thresholds.ipynb` (needs the execution cache) | `results/analysis/label_thresholds/`; generated files in `experiment_results/analysis/label_thresholds/` |
+| Labeling time (Sec. 4) | `python scripts/analysis/timing_labeling.py --dataset <graph>` (needs the execution cache) | `results/analysis/timing_labeling_<graph>.json` |
 
 Training was run on one NVIDIA A100 80 GB per run.
 
