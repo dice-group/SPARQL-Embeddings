@@ -4,6 +4,7 @@ title: "SPARQL-Embeddings: code for results-aware SPARQL embeddings and the SQuA
 type: software
 version: 1.0.0
 license: MIT
+doi: 10.5281/zenodo.24165812
 repository-code: "https://github.com/dice-group/SPARQL-Embeddings"
 authors:
   - family-names: Kurugodu

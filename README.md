@@ -38,7 +38,7 @@ A fixed similarity threshold is still not enough for safe reuse (see the paper, 
 | Positive pairs (J ≥ 0.8) | 39,430 | 37,208 |
 | Negative pairs (J ≤ 0.1) | 93,480 | 168,360 |
 
-Splits are built from connected components of positive pairs, so no query, positive pair or answer set is shared across splits. Files: `datasets/{dbpedia,wikidata}-splits/` (`*-train/valid/test.json` for training and retrieval, `*-test-rq3.json` with complete pair labels for caching).
+Splits are built from connected components of positive pairs, so no query, positive pair or answer set is shared across splits. Files: `datasets/{dbpedia,wikidata}-splits/` (`*-train/valid/test.json`: anchors with stored positives and negatives, for training and the stored-label evaluation; `*-valid-rq3.json` and `*-test-rq3.json`: complete pair labels, used for retrieval (RQ1) and result caching (RQ2). The suffix `rq3` comes from an earlier numbering of the research questions.)
 
 How the dataset is built, and how to reproduce the splits: [`datasets/DATASET.md`](datasets/DATASET.md).
 
@@ -126,4 +126,4 @@ Code: MIT (see [`LICENSE`](LICENSE)). Data: CC BY-SA 4.0, since the DBpedia answ
 
 ## Dataset and citation
 
-The SQuARE dataset, including the answer caches, is archived on Zenodo: https://doi.org/10.5281/zenodo.23923443. Download and file formats: [`datasets/DATASET.md`](datasets/DATASET.md). To cite the code or the dataset, see [`CITATION.cff`](CITATION.cff) (GitHub shows it under "Cite this repository").
+The SQuARE dataset, including the answer caches, is archived on Zenodo: https://doi.org/10.5281/zenodo.23923443. The code of this repository is archived on Zenodo: https://doi.org/10.5281/zenodo.24165812. Download and file formats: [`datasets/DATASET.md`](datasets/DATASET.md). To cite the code or the dataset, see [`CITATION.cff`](CITATION.cff) (GitHub shows it under "Cite this repository").
