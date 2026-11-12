@@ -63,7 +63,7 @@ only needed to recompute labels, apply other thresholds or rebuild the splits.
  "negative_queries": [{"query": "SELECT ...", "answer_jaccard": 0.0}]}
 ```
 
-**Complete labels** (`<g>-{valid,test}-rq3.json`): JSON object with
+**Complete labels** (`<g>-{valid,test}-rq3.json`; the suffix `rq3` comes from an earlier numbering of the research questions: these files were first built for the caching experiment, now RQ2, and also serve as the complete labels of the retrieval evaluation, RQ1): JSON object with
 
 - `metadata`: counts and label definitions;
 - `queries`: list of `{"id", "query_hash", "query", "n_answers"}`, where `id` is the position in the list;

@@ -28,7 +28,7 @@ Ten pretrained encoders (text, code, general LM, SPARQL), before and after resul
 | Control: 3 encoders trained on **syntax** labels (vs. answer labels) | 0.52 (vs. 0.72) | 0.36 (vs. 0.43) |
 | **Result caching**, hit accuracy at θ = 0.8: zero-shot → fine-tuned | 0.15–0.33 → **0.59–0.79** | 0.01–0.10 → **0.21–0.37** |
 
-A fixed similarity threshold is still not enough for safe reuse (see the paper, RQ3): ranking quality and calibration are distinct problems.
+A fixed similarity threshold is still not enough for safe reuse (see the paper, RQ2): ranking quality and calibration are distinct problems.
 
 ## The SQuARE resource
 
@@ -86,18 +86,18 @@ analysis steps on them without retraining: `ln -s experiment_results results`.
 
 | Paper | Command | Output |
 |---|---|---|
-| Training, Table 2 (stored labels), Table 4 (caching), RQ1 | `python scripts/run_experiment.py --models all --datasets dbpedia wikidata --seeds 42 43 44 45 46`, then `python scripts/aggregate_results.py` and `python scripts/generate_tables.py` | `results/raw/`, `results/aggregated/`, `results/tables/` |
+| Training, Table 3 (stored labels), Table 4 (caching), Spearman correlation (Sec. 5.2) | `python scripts/run_experiment.py --models all --datasets dbpedia wikidata --seeds 42 43 44 45 46`, then `python scripts/aggregate_results.py` and `python scripts/generate_tables.py` | `results/raw/`, `results/aggregated/`, `results/tables/` |
 | Non-neural baselines (Tables 2, 3) | `bash scripts/baselines/run_baselines.sh` | `scripts/baselines/results_<graph>.json` |
 | Per-anchor scores (input of Table 3 and the CIs) | `python scripts/analysis/per_anchor_scores.py --dataset <graph>` | `results/per_anchor/` |
-| Table 3 (complete labels), paired CIs, seen/unseen templates (Sec. 4.3) | `python scripts/analysis/paired_analysis.py --dataset <graph>` | `results/analysis/paired_analysis_<graph>.json` |
-| Syntax-supervised control (Table 3, Sec. 4.3) | `MODELS="e5-base-v2 qwen3-embedding codebert" SEEDS="42 43 44" bash scripts/syntax_control/run_syntax_control.sh` | `results_syntax_control/`, `control_results.json` |
-| Caching intervals (Sec. 4.4) | `python scripts/analysis/cache_ci.py` | `results/analysis/cache_ci.json` |
-| Threshold selection (Sec. 4.4, Appendix B, Fig. 4) | `python scripts/analysis/calibrate_thresholds.py --dataset <graph>` | `results/analysis/calibration_<graph>.json` |
-| Checkpoint selection (Sec. 4.1) | `python scripts/analysis/checkpoint_selection.py` | `results/analysis/checkpoint_selection.json` |
-| Inference time (Sec. 4.1) | `python scripts/analysis/timing_inference.py --dataset wikidata` | `results/analysis/timing_inference_wikidata.json` |
-| Dataset statistics (Table 1, Sec. 4.1) | `datasets/dataset_statistics.ipynb`; templates and seen/unseen anchors: `cd scripts/audit && python audit_splits.py ../../datasets/<graph>-splits <graph> audit_<graph>.json` | `datasets/statistics/`, `scripts/audit/audit_<graph>.json` |
-| Label thresholds (Appendix A, Fig. 3) | `LT_MODE=full jupyter nbconvert --to notebook --execute scripts/analysis/label_thresholds.ipynb` (needs the execution cache) | `results/analysis/label_thresholds/`; generated files in `experiment_results/analysis/label_thresholds/` |
-| Labeling time (Sec. 4.1) | `python scripts/analysis/timing_labeling.py --dataset <graph>` (needs the execution cache) | `results/analysis/timing_labeling_<graph>.json` |
+| Table 2 (complete labels), paired CIs, seen/unseen templates (Sec. 5.2) | `python scripts/analysis/paired_analysis.py --dataset <graph>` | `results/analysis/paired_analysis_<graph>.json` |
+| Syntax-supervised control (Sec. 5.2) | `MODELS="e5-base-v2 qwen3-embedding codebert" SEEDS="42 43 44" bash scripts/syntax_control/run_syntax_control.sh` | `results_syntax_control/`, `control_results.json` |
+| Caching intervals (Sec. 5.3) | `python scripts/analysis/cache_ci.py` | `results/analysis/cache_ci.json` |
+| Threshold selection and risk-coverage curves (Sec. 5.3, supplementary material) | `python scripts/analysis/calibrate_thresholds.py --dataset <graph>` | `results/analysis/calibration_<graph>.json` |
+| Checkpoint selection (Sec. 5.1) | `python scripts/analysis/checkpoint_selection.py` | `results/analysis/checkpoint_selection.json` |
+| Inference time (Sec. 5.1) | `python scripts/analysis/timing_inference.py --dataset wikidata` | `results/analysis/timing_inference_wikidata.json` |
+| Dataset statistics (Table 1, Sec. 4) | `datasets/dataset_statistics.ipynb`; templates and seen/unseen anchors: `cd scripts/audit && python audit_splits.py ../../datasets/<graph>-splits <graph> audit_<graph>.json` | `datasets/statistics/`, `scripts/audit/audit_<graph>.json` |
+| Label thresholds (supplementary material) | `LT_MODE=full jupyter nbconvert --to notebook --execute scripts/analysis/label_thresholds.ipynb` (needs the execution cache) | `results/analysis/label_thresholds/`; generated files in `experiment_results/analysis/label_thresholds/` |
+| Labeling time (supplementary material) | `python scripts/analysis/timing_labeling.py --dataset <graph>` (needs the execution cache) | `results/analysis/timing_labeling_<graph>.json` |
 
 Training was run on one NVIDIA A100 80 GB per run.
 
@@ -122,4 +122,8 @@ InfoNCE (temperature 0.05) with in-batch candidates, 4 execution-verified explic
 
 ## License
 
-Code: MIT. Data: CC BY 4.0. Queries derive from LSQ; its attribution requirements apply.
+Code: MIT (see [`LICENSE`](LICENSE)). Data: CC BY-SA 4.0, since the DBpedia answer sets derive from DBpedia (CC BY-SA); Wikidata is CC0. Queries derive from LSQ; its attribution requirements apply.
+
+## Dataset and citation
+
+The SQuARE dataset, including the answer caches, is archived on Zenodo: https://doi.org/10.5281/zenodo.23923443. Download and file formats: [`datasets/DATASET.md`](datasets/DATASET.md). To cite the code or the dataset, see [`CITATION.cff`](CITATION.cff) (GitHub shows it under "Cite this repository").

@@ -3,10 +3,17 @@ requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "result-aware-transformers"
-version = "0.1.0"
+name = "sparql-embeddings"
+version = "1.0.0"
 description = "Model-agnostic dynamic-hard-negative fine-tuning and evaluation for result-aware SPARQL embeddings."
 requires-python = ">=3.10"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+  {name = "Ganesh Kurugodu"},
+  {name = "Hamada M. Zahera"},
+  {name = "Axel-Cyrille Ngonga Ngomo"},
+]
 dependencies = [
   "torch>=2.3",
   "transformers>=4.51",
@@ -17,6 +24,10 @@ dependencies = [
   "pandas>=2.2",
   "safetensors>=0.4",
 ]
+
+[project.urls]
+Repository = "https://github.com/dice-group/SPARQL-Embeddings"
+Dataset = "https://doi.org/10.5281/zenodo.23923443"
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
