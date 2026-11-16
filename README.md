@@ -15,6 +15,10 @@ Two SPARQL queries can look almost the same and return different answers, or loo
 
 Runs in the browser, nothing to install. Built from [`demo/`](demo/) into [`docs/`](docs/) and served with GitHub Pages.
 
+## ▶ Downstream use case: semantic caching
+
+[`downstream/semantic_cache/`](downstream/semantic_cache/) puts a results-aware encoder in front of a live SPARQL endpoint (the DICE DBpedia and Wikidata mirrors, [dbpedia.org/sparql](https://dbpedia.org/sparql) and [QLever Wikidata](https://qlever.dev/wikidata)) and replays a query log through a semantic cache. By default it runs in shadow mode: every query is still executed, and each reuse decision is checked against the live answer.
+
 ## Key results
 
 Ten pretrained encoders (text, code, general LM, SPARQL), before and after results-aware fine-tuning. Mean over encoders; fine-tuned = mean of five seeds.
