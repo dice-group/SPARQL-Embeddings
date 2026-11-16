@@ -1,6 +1,6 @@
 # Results-Aware SPARQL Embeddings (SQuARE)
 
-Code and data for the paper **"Contrastive Learning for Results-Aware SPARQL Embeddings"**.
+Code and data for the paper **"SQuARE: Learning Results-Aware SPARQL Embeddings from Query Logs"** (ESWC 2027, Resource track).
 
 Two SPARQL queries can look almost the same and return different answers, or look different and return the same answers. We execute a query log **once, offline**, label query pairs by the **Jaccard overlap of their answer sets**, and fine-tune pretrained encoders with a contrastive loss on these labels. At inference, the encoder needs **only the query text**.
 
@@ -32,7 +32,7 @@ Ten pretrained encoders (text, code, general LM, SPARQL), before and after resul
 | Control: 3 encoders trained on **syntax** labels (vs. answer labels) | 0.52 (vs. 0.72) | 0.36 (vs. 0.43) |
 | **Result caching**, hit accuracy at θ = 0.8: zero-shot → fine-tuned | 0.15–0.33 → **0.59–0.79** | 0.01–0.10 → **0.21–0.37** |
 
-A fixed similarity threshold is still not enough for safe reuse (see the paper, RQ3): ranking quality and calibration are distinct problems.
+A fixed similarity threshold is still not enough for safe reuse (see the paper, RQ2): ranking quality and calibration are distinct problems.
 
 ## The SQuARE resource
 
