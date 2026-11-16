@@ -1,0 +1,38 @@
+# SPARQL endpoints for the semantic caching demo.
+#
+# tier "labels-match": the endpoint SQuARE was built on. Stored SQuARE labels
+#   describe this data, so live J should agree with them.
+# tier "live": a different snapshot of the same graph. Stored labels do not
+#   apply; correctness is measured live (shadow mode).
+#
+# max_rows: known result cap of the endpoint. A result with this many rows is
+#   marked "truncated" and not scored. Values below are defaults to confirm
+#   against each service before reporting numbers.
+
+dbpedia-dice:
+  url: https://dbpedia.data.dice-research.org/sparql
+  graph: dbpedia
+  tier: labels-match        # DBpedia 2022-12 mirror used to build SQuARE
+  max_rows: null
+  min_interval_s: 0.2
+
+wikidata-dice:
+  url: https://wikidata.data.dice-research.org/sparql
+  graph: wikidata
+  tier: labels-match        # Wikidata truthy 2025-01-22 mirror used to build SQuARE
+  max_rows: null
+  min_interval_s: 0.2
+
+dbpedia-public:
+  url: https://dbpedia.org/sparql
+  graph: dbpedia
+  tier: live                # live DBpedia (Virtuoso); public, be polite
+  max_rows: 10000           # Virtuoso default ResultSetMaxRows; confirm
+  min_interval_s: 1.0
+
+wikidata-qlever:
+  url: https://qlever.dev/api/wikidata   # API behind https://qlever.dev/wikidata; confirm
+  graph: wikidata
+  tier: live                # current Wikidata on QLever; public, be polite
+  max_rows: null
+  min_interval_s: 1.0

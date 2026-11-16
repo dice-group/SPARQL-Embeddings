@@ -1,6 +1,6 @@
 # Results-Aware SPARQL Embeddings (SQuARE)
 
-Code and data for the paper **"Contrastive Learning for Results-Aware SPARQL Embeddings"**.
+Code and data for the paper **"SQuARE: Learning Results-Aware SPARQL Embeddings from Query Logs"** (ESWC 2027, Resource track).
 
 Two SPARQL queries can look almost the same and return different answers, or look different and return the same answers. We execute a query log **once, offline**, label query pairs by the **Jaccard overlap of their answer sets**, and fine-tune pretrained encoders with a contrastive loss on these labels. At inference, the encoder needs **only the query text**.
 
@@ -14,6 +14,10 @@ Two SPARQL queries can look almost the same and return different answers, or loo
 | **[Demo 2 · Retrieval and caching](https://hzahera.github.io/SPARQL-Embeddings/tasks.html)** | Real queries where text similarity retrieves the wrong query, and how fine-tuning changes retrieval and result-cache decisions. |
 
 Runs in the browser, nothing to install. Built from [`demo/`](demo/) into [`docs/`](docs/) and served with GitHub Pages.
+
+## ▶ Downstream use case: semantic caching
+
+[`downstream/semantic_cache/`](downstream/semantic_cache/) puts a results-aware encoder in front of a live SPARQL endpoint (the DICE DBpedia and Wikidata mirrors, [dbpedia.org/sparql](https://dbpedia.org/sparql) and [QLever Wikidata](https://qlever.dev/wikidata)) and replays a query log through a semantic cache. By default it runs in shadow mode: every query is still executed, and each reuse decision is checked against the live answer.
 
 ## Key results
 
