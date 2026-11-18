@@ -23,7 +23,6 @@ import gc
 import json
 from pathlib import Path
 
-import numpy as np
 import torch
 
 from result_aware import cache_eval as ce

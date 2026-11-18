@@ -6,7 +6,7 @@
 Methods: random, tfidf, bm25, normalized match, algebra similarity, query-form features.
 Statistics (idf, feature scaling) are fitted on the training split only; no tuning.
 Usage: PYTHONHASHSEED=0 python nonneural.py <repo_root> <dbpedia|wikidata> <out.json>"""
-import json, math, re, sys, random
+import json, math, re, sys
 from collections import Counter
 from multiprocessing import Pool
 import numpy as np

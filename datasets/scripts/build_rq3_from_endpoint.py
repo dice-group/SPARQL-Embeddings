@@ -704,7 +704,7 @@ def build_rq3(
         f"{accounted:,}/{total_pairs:,}"
     )
     print(
-        f"Answer sets saved       : NO"
+        "Answer sets saved       : NO"
     )
     print(
         f"Output size             : "
